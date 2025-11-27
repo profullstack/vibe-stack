@@ -3,6 +3,8 @@
  * Contains functions to initialize different pages in the application
  */
 
+import { trackLogin, trackSignup, trackGoal, trackApiKeyCreated } from './utils/datafast-tracking.js';
+
 /**
  * Initialize login page
  */
@@ -140,6 +142,12 @@ export async function initLoginPage() {
         };
         localStorage.setItem('user', JSON.stringify(userObject));
       }
+      
+      // Track successful login
+      trackLogin({
+        email,
+        method: 'email'
+      });
       
       // Dispatch auth changed event
       window.dispatchEvent(new CustomEvent('auth-changed'));
@@ -294,6 +302,14 @@ export function initRegisterPage() {
       }
       
       const authData = await response.json();
+      
+      // Track successful signup
+      trackSignup({
+        email,
+        method: 'email',
+        plan: selectedPlan,
+        payment_method: selectedPayment
+      });
       
       if (authData && authData.session && authData.session.access_token) {
         // Store JWT token in localStorage

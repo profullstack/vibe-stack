@@ -4,6 +4,8 @@
 import { initI18n, localizer } from './i18n-setup.js';
 import { createRouter, defineRoutes } from './router.js';
 import './components-loader.js'; // Import all components
+import { initAutoPageviewTracking } from './utils/datafast-tracking.js';
+import * as datafastTracking from './utils/datafast-tracking.js';
 
 // Initialize the application
 let initialized = false;
@@ -65,6 +67,10 @@ function initRouter() {
   // Define and register routes
   defineRoutes(router);
   
+  // Initialize automatic pageview tracking for SPA navigation
+  initAutoPageviewTracking();
+  console.log('Datafast pageview tracking initialized');
+  
   // Debug: Try to access the router's internal state
   console.log('Router internal state:', router);
   
@@ -109,3 +115,7 @@ window.app = window.app || {};
 Object.assign(window.app, {
   initApp
 });
+
+// Expose Datafast tracking utilities globally for easy access
+window.datafast = window.datafast || {};
+window.datafastTracking = datafastTracking;

@@ -1,3 +1,5 @@
+import { trackCheckoutInitiated, trackPaymentSuccess, trackGoal } from '../utils/datafast-tracking.js';
+
 /**
  * Initialize the Stripe payment page
  */
@@ -7,10 +9,18 @@ export function initStripePaymentPage() {
   
   if (paymentStatus === 'success') {
     window.showFloatingAlert('Payment successful! Your subscription is now active.', 'success');
+    // Track successful payment
+    trackPaymentSuccess({
+      plan: localStorage.getItem('last_selected_plan') || 'unknown'
+    });
     // Remove the query parameter from the URL
     window.history.replaceState({}, document.title, window.location.pathname);
   } else if (paymentStatus === 'cancel') {
     window.showFloatingAlert('Payment cancelled. You can try again when you\'re ready.', 'info');
+    // Track payment cancellation
+    trackGoal('payment_cancelled', {
+      plan: localStorage.getItem('last_selected_plan') || 'unknown'
+    });
     // Remove the query parameter from the URL
     window.history.replaceState({}, document.title, window.location.pathname);
   }
@@ -145,6 +155,16 @@ export function initStripePaymentPage() {
       
       try {
         console.log('Creating checkout session with:', { email, plan, successUrl, cancelUrl });
+        
+        // Track checkout initiation
+        trackCheckoutInitiated({
+          email,
+          plan,
+          amount: plan === 'yearly' ? 3000 : 500
+        });
+        
+        // Store the selected plan for tracking on return
+        localStorage.setItem('last_selected_plan', plan);
         
         // Show processing state
         submitButton.disabled = true;
