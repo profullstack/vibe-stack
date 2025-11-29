@@ -1,5 +1,7 @@
 # ProFullStack Modules
 
+[![Crypto Payment](https://paybadge.profullstack.com/badge.svg)](https://paybadge.profullstack.com/?tickers=btc%2Ceth%2Csol%2Cusdc)
+
 This repository contains modular components extracted from the ProFullStack boilerplate application. These modules can be used independently in other projects.
 
 ## Available Modules

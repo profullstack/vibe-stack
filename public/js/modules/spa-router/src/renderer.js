@@ -105,44 +105,6 @@ export function createRenderer(options = {}) {
       }
     }
     
-    // Clean up previous view styles to prevent accumulation
-    const previousViewStyles = document.head.querySelectorAll('style[data-view-style]');
-    previousViewStyles.forEach(style => {
-      try {
-        const styleId = style.getAttribute('data-view-style-id');
-        style.remove();
-        console.log(`Removed previous view style: ${styleId}`);
-      } catch (error) {
-        console.warn('Error removing view style:', error);
-      }
-    });
-    
-    // Extract and process style tags from both head and body sections
-    // Views might have style tags at the root level or in the body
-    const headStyleTags = Array.from(doc.head.querySelectorAll('style'));
-    const bodyStyleTags = Array.from(doc.body.querySelectorAll('style'));
-    const allStyleTags = [...headStyleTags, ...bodyStyleTags];
-    
-    console.log(`Found ${allStyleTags.length} style tags in view (${headStyleTags.length} in head, ${bodyStyleTags.length} in body)`);
-    
-    // Process style tags from the view
-    allStyleTags.forEach((styleTag, index) => {
-      const styleId = `view-style-${Date.now()}-${index}`;
-      const newStyle = document.createElement('style');
-      newStyle.textContent = styleTag.textContent;
-      newStyle.setAttribute('data-view-style', 'true');
-      newStyle.setAttribute('data-view-style-id', styleId);
-      
-      // Add to document head
-      document.head.appendChild(newStyle);
-      console.log(`Added view style tag: ${styleId} with content: ${styleTag.textContent.substring(0, 100)}...`);
-      
-      // Remove the style tag from the original location to prevent duplication
-      if (styleTag.parentNode) {
-        styleTag.parentNode.removeChild(styleTag);
-      }
-    });
-    
     // Get all existing web components in the current DOM to preserve
     const existingComponents = {};
     const customElements = element.querySelectorAll('*').filter(el => el.tagName.includes('-'));
